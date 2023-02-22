@@ -29,10 +29,10 @@ function remove(locId) {
 //added a condition here to make sure we don't always have 2 dates.
 function save(location) {
 	if (location.id) {
-		location.updatedAt = new Date().toLocaleDateString().then(() => {
+		location.updatedAt = new Date().toLocaleDateString()
+		storageService.put(LOCATIONS_KEY, location).then(() => {
 			return Promise.resolve()
 		})
-		storageService.put(LOCATIONS_KEY, location)
 	} else {
 		location.createdAt = new Date().toLocaleDateString()
 		storageService.post(LOCATIONS_KEY, location).then(() => {

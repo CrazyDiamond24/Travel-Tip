@@ -56,7 +56,7 @@ function _getLocationStringParams() {
 }
 
 function onCopyLocation() {
-	//TODO: 9. button that saves a link to the clipboard. The link will
+	//DONE: 9. button that saves a link to the clipboard. The link will
 	//be to your application (URL for GitHub pages) with the Lat and Lng
 	//params
 	let lat = utilService.getValFromParam('lat')

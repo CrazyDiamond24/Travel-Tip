@@ -1,4 +1,4 @@
-import { API_KEY_GOOGLE_MAPS } from './keys.service.js'
+import { API_KEY_GOOGLE_MAPS, API_KEY_WEATHER } from './keys.service.js'
 import { utilService } from './util.service.js'
 
 export const mapService = {
@@ -6,6 +6,7 @@ export const mapService = {
 	addMarker,
 	panTo,
 	getAddressInLatLng,
+	getWeather,
 }
 
 // Var that is used throughout this Module (not global)
@@ -32,9 +33,9 @@ function _onMap(ev) {
 		position: { lat, lng },
 	})
 	//c-I don't think it's the best location but I didn't know where to put it
-	utilService.setQueryParams('lat', lat)
-	utilService.setQueryParams('lng', lng)
-
+	utilService.setQueryParams({ lat: lat })
+	utilService.setQueryParams({ lng: lng })
+	getWeather(lat, lng)
 	panTo(lat, lng)
 }
 
@@ -77,5 +78,11 @@ function getAddressInLatLng(address) {
 	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY_GOOGLE_MAPS}`).then(res => {
 		if (!res.data.results.length) return Promise.reject()
 		return Promise.resolve(res.data.results[0].geometry)
+	})
+}
+
+function getWeather(lat, lng) {
+	return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${API_KEY_WEATHER}`).then(res => {
+		return Promise.resolve(res)
 	})
 }
