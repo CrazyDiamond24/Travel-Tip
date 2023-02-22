@@ -117,9 +117,9 @@ function renderLocs() {
 				return `
           <li>${loc.name}
           <span>${loc.updatedAt ? `(${loc.updatedAt})` : `(${loc.createdAt})`}</span>
-          <button onclick="onRemoveLoc('${loc.id}')">Delete</button>
-          <button onclick="onGoToLoc(${loc.lat}, ${loc.lng})">GoTo</button>
-          <button onclick="onUpdateLocation('${loc.id}')">Update</button>
+          <button class="btn" onclick="onRemoveLoc('${loc.id}')">Delete</button>
+          <button class="btn" onclick="onGoToLoc(${loc.lat}, ${loc.lng})">GoTo</button>
+          <button class="btn" onclick="onUpdateLocation('${loc.id}')">Update</button>
           </li>
       `
 			})

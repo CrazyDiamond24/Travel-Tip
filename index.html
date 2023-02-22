@@ -1,43 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik&display=swap"
+      rel="stylesheet"
+    />
     <title>TravelTip</title>
-</head>
-<body>
+  </head>
+  <body>
     <header class="main-header">
-        <div class="logo">TravelTip<img alt="" class="plane" src="imgs/plane.png"/></div>
-        <div class="search-container">
+      <div class="logo">
+        TravelTip<img alt="" class="plane" src="imgs/plane.png" />
+      </div>
+      <div class="search-container">
         <nav>
-            <form class="search-form" onsubmit="onSearchPlace(event)">
-                <input type="text" placeholder="enter your location" name="searchKey"/>
-                <button type="submit" >GO</button>
-            </form>
+          <form class="search-form" onsubmit="onSearchPlace(event)">
+            <input
+              type="text"
+              placeholder="Search a place..."
+              name="searchKey"
+            />
+            <button class="go-btn" type="submit">GO</button>
+          </form>
         </nav>
       </div>
     </header>
 
-    <div class="map-container">
-    <div id="map" style="width: 100%; height: 400px;"></div>
- </div>
+    <main class="main-content">
+      <div class="map-container">
+        <div id="map" style="width: 100%"></div>
+        <div class="control-btns">
+          <button onclick="onAddMarker()" class="btn btn-add-marker">
+            Save and Mark location
+          </button>
+          <button onclick="onGetUserPos()" class="btn btn-user-pos">
+            My location
+          </button>
+          <button class="btn" onclick="onCopyLocation()">Copy Location</button>
+        </div>
+      </div>
 
-
-    <button onclick="onGetUserPos()" class="btn-user-pos">Get User Position</button>
-    <button onclick="onCopyLocation()">Copy Location</button>
-    <button onclick="onAddMarker()" class="btn-add-marker">Save and Mark location</button>
-    <p>You are at: <span class="user-pos"></span></p>
-    <p>Locations: 
-        <pre class="locs"></pre>
-    </p>
-    
-    <section class="loc-container"></section>
-
+      <div class="saved-locations">
+        <p>You are at: <span class="user-pos"></span></p>
+        <h1>Saved Locations:</h1>
+        <section class="loc-container"></section>
+      </div>
+    </main>
+    <footer>
+      Created by - Eden & Rania
+    </footer>
     <script src="./lib/axios.js"></script>
     <script type="module" src="js/app.controller.js"></script>
-</body>
+  </body>
 </html>

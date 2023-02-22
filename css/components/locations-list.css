@@ -1,0 +1,45 @@
+li {
+    background-color: rgb(5, 130, 239,0.4);
+    padding: 30px;
+    max-width: 500px;
+    white-space: nowrap;
+    border-radius: 25px;
+    display:flex;
+    align-items: center;
+    gap:10px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: rgb(59, 59, 60);
+    font-size: 1.1rem;
+}
+
+h1 {
+    color:white;
+}
+
+p{
+    color:rgb(5, 130, 239)
+}
+
+.user-pos {
+    color:rgb(5, 128, 26);
+}
+
+.loc-container {
+    background-color: rgb(161, 161, 162,0.3);
+    border-radius: 25px;
+    padding:10px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgb(69, 153, 225);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #fff;
+  }
+  

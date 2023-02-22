@@ -35,9 +35,8 @@ function save(location) {
 		storageService.put(LOCATIONS_KEY, location)
 	} else {
 		location.createdAt = new Date().toLocaleDateString()
-		storageService.post(LOCATIONS_KEY, location).then(() => {
+		storageService.post(LOCATIONS_KEY, location)
 			return Promise.resolve()
-		})
 	}
 }
 

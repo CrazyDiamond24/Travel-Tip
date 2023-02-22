@@ -35,7 +35,7 @@ input[type='text']:hover {
   outline: 2px solid rgb(234, 255, 0);
 }
 
-button[type='submit'] {
+.go-btn {
   font-size: 1rem;
   padding: 0.5rem 1rem;
   border: none;
@@ -45,7 +45,7 @@ button[type='submit'] {
   cursor: pointer;
 }
 
-button:hover {
+.got-btn {
   outline: 3px solid rgb(234, 255, 0);
 }
 
