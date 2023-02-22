@@ -1,4 +1,6 @@
 import { API_KEY_GOOGLE_MAPS } from './keys.service.js'
+import { utilService } from './util.service'
+
 export const mapService = {
 	initMap,
 	addMarker,
@@ -29,6 +31,9 @@ function _onMap(ev) {
 	gCurrMarker.setOptions({
 		position: { lat, lng },
 	})
+	//c-I don't think it's the best location but I didn't know where to put it
+	utilService.setQueryParams('lat', lat)
+	utilService.setQueryParams('lng', lng)
 
 	panTo(lat, lng)
 }
