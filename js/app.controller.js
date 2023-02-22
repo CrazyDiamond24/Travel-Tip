@@ -1,5 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { utilService } from './services/util.service.js'
 
 window.onload = onInit
 window.onAddMarker = onAddMarker
@@ -17,6 +18,7 @@ function onInit() {
 		.initMap()
 		.then(() => {
 			console.log('Map is ready')
+			_getLocationStringParams()
 		})
 		.catch(() => console.log('Error: cannot init map'))
 	renderLocs()
@@ -45,12 +47,22 @@ function onSearchPlace(ev) {
 		.catch(err => console.log('no res'))
 }
 
+function _getLocationStringParams() {
+	let lat = utilService.getValFromParam('lat')
+	let lng = utilService.getValFromParam('lng')
+
+	if (!lat || !lng) return
+	mapService.panTo(lat, lng)
+}
+
 function onCopyLocation() {
 	//TODO: 9. button that saves a link to the clipboard. The link will
 	//be to your application (URL for GitHub pages) with the Lat and Lng
 	//params
+	let lat = utilService.getValFromParam('lat')
+	let lng = utilService.getValFromParam('lng')
 
-	navigator.clipboard.writeText(copyText.value)
+	navigator.clipboard.writeText(`https://crazydiamond24.github.io/Travel-Tip/lat=${lat},lng=${lng}`)
 }
 
 function onAddMarker() {
