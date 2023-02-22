@@ -56,9 +56,6 @@ function _getLocationStringParams() {
 }
 
 function onCopyLocation() {
-	//TODO: 9. button that saves a link to the clipboard. The link will
-	//be to your application (URL for GitHub pages) with the Lat and Lng
-	//params
 	let lat = utilService.getValFromParam('lat')
 	let lng = utilService.getValFromParam('lng')
 
@@ -66,10 +63,11 @@ function onCopyLocation() {
 }
 
 function onAddMarker() {
-	console.log('Adding a marker')
 	let title = prompt('Name of location?')
 	mapService.addMarker(title).then(marker => {
-		locService.save(marker.position, title)
+		const { lat, lng } = mapService.getLatLng(marker.getPosition())
+		console.log(marker)
+		locService.save({ name: title, lat, lng })
 	})
 }
 
