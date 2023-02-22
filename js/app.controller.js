@@ -6,10 +6,10 @@ window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
-//comment 
-console.log("eden")
+window.onSearchPlace = onSearchPlace
+window.onCopyLocation = onCopyLocation
+
 function onInit() {
-	console.log('heyyyyyy !!')
 	mapService
 		.initMap()
 		.then(() => {
@@ -24,6 +24,20 @@ function getPosition() {
 	return new Promise((resolve, reject) => {
 		navigator.geolocation.getCurrentPosition(resolve, reject)
 	})
+}
+
+function onSearchPlace(ev) {
+	ev.preventDefault()
+
+	//TODO:8 Implement search: user enters an address (such as Tokyo) use the google
+	//Geocode API to turn it into cords (such as: {lat: 35.62, lng:139.79})
+	//TODO: pan the map and also add it as new place.
+}
+
+function onCopyLocation() {
+	//TODO: 9. button that saves a link to the clipboard. The link will
+	//be to your application (URL for GitHub pages) with the Lat and Lng
+	//params
 }
 
 function onAddMarker() {
@@ -48,7 +62,12 @@ function onGetUserPos() {
 			console.log('err!!!', err)
 		})
 }
-function onPanTo() {
+
+function onPanTo(pos) {
 	console.log('Panning the Map')
-	mapService.panTo(35.6895, 139.6917)
+	mapService.panTo(pos)
 }
+
+//eden: add marker 3,8
+//raina: 5,6
+//whoever 9
