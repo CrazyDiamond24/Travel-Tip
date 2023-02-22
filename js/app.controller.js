@@ -6,7 +6,7 @@ window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
-
+//comment 
 function onInit() {
 	console.log('heyyyyyy !!')
 	mapService
