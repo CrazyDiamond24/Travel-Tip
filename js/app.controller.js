@@ -29,9 +29,18 @@ function getPosition() {
 function onSearchPlace(ev) {
 	ev.preventDefault()
 
-	//TODO:8 Implement search: user enters an address (such as Tokyo) use the google
+	const locName = document.querySelector('input').value
+	mapService
+		.getAddressInLatLng(locName)
+		.then(res => {
+			const { lat, lng } = res.location
+			onPanTo(lat, lng)
+			locService.save({ lat, lng, name: locName })
+		})
+		.catch(err => console.log('no res'))
+	//DONE:8 Implement search: user enters an address (such as Tokyo) use the google
 	//Geocode API to turn it into cords (such as: {lat: 35.62, lng:139.79})
-	//TODO: pan the map and also add it as new place.
+	//DONE: pan the map and also add it as new place.
 }
 
 function onCopyLocation() {
@@ -40,9 +49,9 @@ function onCopyLocation() {
 	//params
 }
 
-function onAddMarker() {
+function onAddMarker(pos) {
 	console.log('Adding a marker')
-	mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 })
+	mapService.addMarker(pos)
 }
 
 function onGetLocs() {
@@ -56,16 +65,16 @@ function onGetUserPos() {
 	getPosition()
 		.then(pos => {
 			console.log('User position is:', pos.coords)
-			document.querySelector('.user-pos').innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
+			onPanTo(pos.coords.latitude, pos.coords.longitude)
 		})
 		.catch(err => {
 			console.log('err!!!', err)
 		})
 }
 
-function onPanTo(pos) {
-	console.log('Panning the Map')
-	mapService.panTo(pos)
+function onPanTo(lat, lng) {
+	document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
+	mapService.panTo({ lat, lng })
 }
 
 //eden: add marker 3,8

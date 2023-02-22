@@ -3,20 +3,26 @@ export const mapService = {
 	initMap,
 	addMarker,
 	panTo,
+	getAddressInLatLng,
+	getLatLngFromAddress,
 }
 
 // Var that is used throughout this Module (not global)
 var gMap
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
-	console.log('InitMap')
 	return _connectGoogleApi().then(() => {
 		console.log('google available')
 		gMap = new google.maps.Map(document.querySelector('#map'), {
 			center: { lat, lng },
 			zoom: 15,
 		})
-		console.log('Map!', gMap)
+		//DONE: when the map is pressed the location will apear
+		gMap.addListener('click', ev => {
+			const lat = ev.latLng.lat()
+			const lng = ev.latLng.lng()
+			document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
+		})
 	})
 }
 
@@ -45,5 +51,18 @@ function _connectGoogleApi() {
 	return new Promise((resolve, reject) => {
 		elGoogleApi.onload = resolve
 		elGoogleApi.onerror = () => reject('Google script failed to load')
+	})
+}
+
+function getAddressInLatLng(address) {
+	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY_GOOGLE_MAPS}`).then(res => {
+		if (!res.data.results.length) return Promise.reject()
+		return Promise.resolve(res.data.results[0].geometry)
+	})
+}
+
+function getLatLngFromAddress(lat, lng) {
+	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY_GOOGLE_MAPS}`).then(res => {
+		return Promise.resolve(res)
 	})
 }
