@@ -7,6 +7,7 @@ window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 //comment 
+console.log("eden")
 function onInit() {
 	console.log('heyyyyyy !!')
 	mapService
