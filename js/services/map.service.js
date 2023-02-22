@@ -7,6 +7,7 @@ export const mapService = {
 	panTo,
 	getAddressInLatLng,
 	getWeather,
+	getLatLng,
 }
 
 // Var that is used throughout this Module (not global)
@@ -21,13 +22,13 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 			zoom: 15,
 		})
 
-		gCurrMarker = addMarker()
+		addMarker().then(res => (gCurrMarker = res))
 		gMap.addListener('click', _onMap)
 	})
 }
 
 function _onMap(ev) {
-	const { lat, lng } = _getLatLng(ev.latLng)
+	const { lat, lng } = getLatLng(ev.latLng)
 	document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
 	gCurrMarker.setOptions({
 		position: { lat, lng },
@@ -35,11 +36,13 @@ function _onMap(ev) {
 	//c-I don't think it's the best location but I didn't know where to put it
 	utilService.setQueryParams({ lat: lat })
 	utilService.setQueryParams({ lng: lng })
-	getWeather(lat, lng)
+	getWeather(lat, lng).then(res => {
+		;`<div class="card"></div>`
+	})
 	panTo(lat, lng)
 }
 
-function _getLatLng(latLng) {
+function getLatLng(latLng) {
 	return {
 		lat: latLng.lat(),
 		lng: latLng.lng(),
@@ -48,11 +51,11 @@ function _getLatLng(latLng) {
 
 function addMarker(title = '') {
 	var marker = new google.maps.Marker({
-		position: _getLatLng(gMap.getCenter()),
+		position: getLatLng(gMap.getCenter()),
 		map: gMap,
 		title,
 	})
-	return marker
+	return Promise.resolve(marker)
 }
 
 function panTo(lat, lng) {

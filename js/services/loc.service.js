@@ -1,7 +1,7 @@
 import { storageService } from './async-storage.service.js'
 import { utilService } from './util.service.js'
 
-const LOCATIONS_KEY = 'locationDB'
+const LOCATIONS_KEY = 'locationsDB'
 
 _createLocs()
 
@@ -30,14 +30,10 @@ function remove(locId) {
 function save(location) {
 	if (location.id) {
 		location.updatedAt = new Date().toLocaleDateString()
-		storageService.put(LOCATIONS_KEY, location).then(() => {
-			return Promise.resolve()
-		})
+		storageService.put(LOCATIONS_KEY, location)
 	} else {
 		location.createdAt = new Date().toLocaleDateString()
-		storageService.post(LOCATIONS_KEY, location).then(() => {
-			return Promise.resolve()
-		})
+		storageService.post(LOCATIONS_KEY, location)
 	}
 }
 
@@ -71,7 +67,5 @@ function _createLoc({ lat, lng, name }) {
 		lng,
 		weather: '',
 		createdAt: new Date().toLocaleDateString(),
-		//this should only happen when the location is updated - so I'm doing it at the update location function
-		// updatedAt: new Date().toLocaleDateString(),
 	}
 }
