@@ -4,11 +4,11 @@ export const mapService = {
 	addMarker,
 	panTo,
 	getAddressInLatLng,
-	getLatLngFromAddress,
 }
 
 // Var that is used throughout this Module (not global)
 var gMap
+var gCurrMarker
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
 	return _connectGoogleApi().then(() => {
@@ -17,20 +17,34 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 			center: { lat, lng },
 			zoom: 15,
 		})
-		//DONE: when the map is pressed the location will apear
-		gMap.addListener('click', ev => {
-			const lat = ev.latLng.lat()
-			const lng = ev.latLng.lng()
-			document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
-		})
+
+		gCurrMarker = addMarker()
+		gMap.addListener('click', _onMap)
 	})
 }
 
-function addMarker(loc) {
+function _onMap(ev) {
+	const { lat, lng } = _getLatLng(ev.latLng)
+	document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
+	gCurrMarker.setOptions({
+		position: { lat, lng },
+	})
+
+	panTo(lat, lng)
+}
+
+function _getLatLng(latLng) {
+	return {
+		lat: latLng.lat(),
+		lng: latLng.lng(),
+	}
+}
+
+function addMarker(title = '') {
 	var marker = new google.maps.Marker({
-		position: loc,
+		position: _getLatLng(gMap.getCenter()),
 		map: gMap,
-		title: 'Hello World!',
+		title,
 	})
 	return marker
 }
@@ -58,11 +72,5 @@ function getAddressInLatLng(address) {
 	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY_GOOGLE_MAPS}`).then(res => {
 		if (!res.data.results.length) return Promise.reject()
 		return Promise.resolve(res.data.results[0].geometry)
-	})
-}
-
-function getLatLngFromAddress(lat, lng) {
-	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY_GOOGLE_MAPS}`).then(res => {
-		return Promise.resolve(res)
 	})
 }
