@@ -3,20 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap" rel="stylesheet">
     <title>TravelTip</title>
 </head>
 <body>
-    <h1>TravelTip Starter</h1>
-    <div id="map" style="width: 100%; height: 400px;"></div>
-    <form onsubmit="onSearchPlace(event)">
-        <input placeholder="enter your location" name="searchKey"/>
-        <button>GO</button>
-    </form>
+    <header class="main-header">
+        <div class="logo">TravelTip<img alt="" class="plane" src="imgs/plane.png"/></div>
+        <div class="search-container">
+        <nav>
+            <form class="search-form" onsubmit="onSearchPlace(event)">
+                <input type="text" placeholder="enter your location" name="searchKey"/>
+                <button type="submit" >GO</button>
+            </form>
+        </nav>
+      </div>
+    </header>
 
-    <button onclick="onAddMarker()" class="btn-add-marker">Add Marker Speific Location</button>
+    <div class="map-container">
+    <div id="map" style="width: 100%; height: 400px;"></div>
+ </div>
+
+
     <button onclick="onGetUserPos()" class="btn-user-pos">Get User Position</button>
-    <button onclick="onGetLocs()" class="btn-get-locs">Get Locations</button>
-    <button onclick="onPanTo()"class="btn-pan">Pan Map to Tokyo</button>
     <button onclick="onCopyLocation()">copy location</button>
     <p>You are at: <span class="user-pos"></span></p>
     <p>Locations: 
