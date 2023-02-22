@@ -1,0 +1,16 @@
+#map {
+    margin-block-start: 40px;
+    margin-inline-end: 20px;
+    border-radius: 20px;
+    outline: 2px solid #234af5;
+    max-width: 50%;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+
+.map-container{
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+}
