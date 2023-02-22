@@ -39,24 +39,26 @@ function onSearchPlace(ev) {
 		.then(res => {
 			const { lat, lng } = res.location
 			onPanTo(lat, lng)
-			locService.save({ lat, lng, name: locName })
+			//FIXME - it wont render!!!!!! iiiiifff
+			locService.save({ lat, lng, name: locName }).then(renderLocs)
 		})
 		.catch(err => console.log('no res'))
-
-	//DONE:8 Implement search: user enters an address (such as Tokyo) use the google
-	//Geocode API to turn it into cords (such as: {lat: 35.62, lng:139.79})
-	//DONE: pan the map and also add it as new place.
 }
 
 function onCopyLocation() {
 	//TODO: 9. button that saves a link to the clipboard. The link will
 	//be to your application (URL for GitHub pages) with the Lat and Lng
 	//params
+
+	navigator.clipboard.writeText(copyText.value)
 }
 
-function onAddMarker(pos) {
+function onAddMarker() {
 	console.log('Adding a marker')
-	mapService.addMarker(pos)
+	let title = prompt('Name of location?')
+	mapService.addMarker(title).then(marker => {
+		locService.save(marker.position, title)
+	})
 }
 
 function onGetLocs() {
@@ -133,9 +135,12 @@ function onUpdateLocation(locId) {
 	locService.get(locId).then(location => {
 		location.name = newName
 		location.updatedAt = new Date().toLocaleDateString()
-		locService.save(location).then(() => {
-			renderLocs()
-		})
+		locService
+			.save(location)
+			.then(() => {
+				renderLocs()
+			})
+			.catch(err => console.log('unsuccessful update'))
 	})
 }
 
