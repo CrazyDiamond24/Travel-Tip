@@ -33,7 +33,8 @@ function save(location) {
 		storageService.put(LOCATIONS_KEY, location)
 	} else {
 		location.createdAt = new Date().toLocaleDateString()
-		storageService.post(LOCATIONS_KEY, location)
+		const yo = storageService.post(LOCATIONS_KEY, location)
+		debugger
 	}
 }
 

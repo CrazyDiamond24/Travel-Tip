@@ -66,7 +66,6 @@ function onAddMarker() {
 	let title = prompt('Name of location?')
 	mapService.addMarker(title).then(marker => {
 		const { lat, lng } = mapService.getLatLng(marker.getPosition())
-		console.log(marker)
 		locService.save({ name: title, lat, lng })
 	})
 }
