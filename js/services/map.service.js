@@ -1,5 +1,5 @@
 import { API_KEY_GOOGLE_MAPS } from './keys.service.js'
-import { utilService } from './util.service'
+import { utilService } from './util.service.js'
 
 export const mapService = {
 	initMap,
