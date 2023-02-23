@@ -1,44 +1,43 @@
-import { API_KEY_GOOGLE_MAPS, API_KEY_WEATHER } from './keys.service.js'
+import { API_KEY_GOOGLE_MAPS } from './keys.service.js'
 import { utilService } from './util.service.js'
 
 export const mapService = {
 	initMap,
 	addMarker,
 	panTo,
-	getAddressInLatLng,
-	getWeather,
+	getAddressCoords,
 	getLatLng,
+	getCurrPos,
+	getUserPos,
 }
 
 // Var that is used throughout this Module (not global)
-var gMap
+var gMap, gCurrPos
 var gCurrMarker
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
 	return _connectGoogleApi().then(() => {
-		console.log('google available')
 		gMap = new google.maps.Map(document.querySelector('#map'), {
 			center: { lat, lng },
 			zoom: 15,
 		})
 
-		addMarker().then(res => (gCurrMarker = res))
+		panTo(lat, lng)
+		gCurrMarker = addMarker()
 		gMap.addListener('click', _onMap)
 	})
 }
 
+function getCurrPos() {
+	return gCurrPos
+}
+
 function _onMap(ev) {
 	const { lat, lng } = getLatLng(ev.latLng)
-	document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
-	gCurrMarker.setOptions({
-		position: { lat, lng },
-	})
-	//c-I don't think it's the best location but I didn't know where to put it
+
 	utilService.setQueryParams({ lat: lat })
 	utilService.setQueryParams({ lng: lng })
-	getWeather(lat, lng).then(res => {
-		;`<div class="card"></div>`
-	})
+
 	panTo(lat, lng)
 }
 
@@ -51,15 +50,21 @@ function getLatLng(latLng) {
 
 function addMarker(title = '') {
 	var marker = new google.maps.Marker({
-		position: getLatLng(gMap.getCenter()),
+		position: gCurrPos,
 		map: gMap,
 		title,
 	})
-	return Promise.resolve(marker)
+	return marker
 }
 
 function panTo(lat, lng) {
+	gCurrPos = { lat, lng }
+
 	var laLatLng = new google.maps.LatLng(lat, lng)
+	gCurrMarker?.setOptions({
+		position: laLatLng,
+	})
+
 	gMap.panTo(laLatLng)
 }
 
@@ -77,15 +82,21 @@ function _connectGoogleApi() {
 	})
 }
 
-function getAddressInLatLng(address) {
+function getAddressCoords(address) {
 	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY_GOOGLE_MAPS}`).then(res => {
 		if (!res.data.results.length) return Promise.reject()
-		return Promise.resolve(res.data.results[0].geometry)
+		return Promise.resolve(res.data.results[0].geometry.location)
 	})
 }
 
-function getWeather(lat, lng) {
-	return axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${API_KEY_WEATHER}`).then(res => {
-		return Promise.resolve(res)
+function getUserPos() {
+	if (!navigator.geolocation) return
+	return new Promise((resolve, reject) => {
+		return navigator.geolocation.getCurrentPosition(resolve, reject)
+	}).then(({ coords }) => {
+		return {
+			lat: coords.latitude,
+			lng: coords.longitude,
+		}
 	})
 }

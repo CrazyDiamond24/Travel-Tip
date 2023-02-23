@@ -1,53 +1,52 @@
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  background-color: #6fc3b2;
-  font-family: 'Rubik', sans-serif;
+	margin: 0;
+	background-color: #6fc3b2;
+	font-family: 'Rubik', sans-serif;
 }
 
 button {
-  cursor: pointer;
-  font-family: 'Rubik', sans-serif;
+	cursor: pointer;
+	font-family: 'Rubik', sans-serif;
 }
 
 .main-content {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 30px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-gap: 30px;
 }
 
 .map-container {
-  grid-column: 2;
-  margin-block-start: 20px;
-  margin-inline-end: 60px;
-  height: 500px;
+	grid-column: 2;
+	justify-self: center;
+	align-self: end;
+	width: 90%;
+	height: 95%;
 }
 
 .control-btns {
-  align-self: flex-end;
-  margin-inline-end: 30px;
-  display: flex;
-  gap:10px;
+	align-self: flex-start;
+	display: flex;
+	justify-content: center;
+	gap: 10px;
 }
-
 
 .loc-container {
-    margin-block-start: 20px;
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-    flex-wrap: nowrap;
-    max-height: 400px;
-    max-width:550px;
-    overflow-y: auto;
+	margin-block-start: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	flex-wrap: nowrap;
+	max-height: 300px;
+	max-width: 550px;
+	overflow-y: auto;
 }
 
-
-.saved-locations{
-    grid-column:1;
-    grid-row:1;
-    margin-inline-start: 30px;
+.saved-locations {
+	grid-column: 1;
+	grid-row: 1;
+	margin-inline-start: 30px;
 }

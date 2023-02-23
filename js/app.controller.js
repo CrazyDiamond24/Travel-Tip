@@ -1,50 +1,44 @@
-import { locService } from './services/loc.service.js'
+import { locationService } from './services/location.service.js'
 import { mapService } from './services/map.service.js'
 import { utilService } from './services/util.service.js'
+import { weatherService } from './services/weather.service.js'
 
 window.onload = onInit
-window.onAddMarker = onAddMarker
-window.onPanTo = onPanTo
-window.onGetLocs = onGetLocs
-window.onGetUserPos = onGetUserPos
-window.onSearchPlace = onSearchPlace
-window.onCopyLocation = onCopyLocation
-window.onGoToLoc = onGoToLoc
-window.onUpdateLocation = onUpdateLocation
-window.onRemoveLoc = onRemoveLoc
 
 function onInit() {
-	mapService
-		.initMap()
-		.then(() => {
-			console.log('Map is ready')
-			_getLocationStringParams()
-		})
-		.catch(() => console.log('Error: cannot init map'))
-	renderLocs()
+	onRenderLocs()
+	onInitMap()
 }
 
-// This function provides a Promise API to the callback-based-api of getCurrentPosition
-function getPosition() {
-	console.log('Getting Pos')
-	return new Promise((resolve, reject) => {
-		navigator.geolocation.getCurrentPosition(resolve, reject)
-	})
+function onRenderLocs() {
+	showLoader()
+	locationService.query().then(renderLocs).then(hideLoader).then(addEventListeners).catch(console.error)
+}
+
+function onRenderWeather() {
+	const pos = mapService.getCurrPos()
+	if (!pos) return
+	weatherService.getWeather(pos).then(renderWeather).catch(console.error)
+}
+
+function onInitMap() {
+	mapService.initMap().then(_getLocationStringParams).catch(console.error)
 }
 
 function onSearchPlace(ev) {
 	ev.preventDefault()
+	const address = document.querySelector('input').value
+	if (!address) return
 
-	const locName = document.querySelector('input').value
 	mapService
-		.getAddressInLatLng(locName)
-		.then(res => {
-			const { lat, lng } = res.location
+		.getAddressCoords(address)
+		.then(({ lat, lng }) => {
+			debugger
 			onPanTo(lat, lng)
-			//FIXME - it wont render!!!!!! iiiiifff
-			locService.save({ lat, lng, name: locName }).then(renderLocs)
+			locationService.save({ name: address, lat, lng }).then(onRenderLocs).catch(console.error)
+			onRenderWeather()
 		})
-		.catch(err => console.log('no res'))
+		.catch(console.error)
 }
 
 function _getLocationStringParams() {
@@ -64,15 +58,24 @@ function onCopyLocation() {
 
 function onAddMarker() {
 	let title = prompt('Name of location?')
-	mapService.addMarker(title).then(marker => {
-		const { lat, lng } = mapService.getLatLng(marker.getPosition())
-		locService.save({ name: title, lat, lng })
-	})
+	const { lat, lng } = mapService.getCurrPos()
+	locationService.save({ name: title, lat, lng }).then(onRenderLocs).catch(console.error)
+}
+
+function addEventListeners() {
+	window.onAddMarker = onAddMarker
+	window.onPanTo = onPanTo
+	window.onGetLocs = onGetLocs
+	window.onGetUserPos = onGetUserPos
+	window.onSearchPlace = onSearchPlace
+	window.onCopyLocation = onCopyLocation
+	window.onGoToLoc = onGoToLoc
+	window.onUpdateLocation = onUpdateLocation
+	window.onRemoveLoc = onRemoveLoc
 }
 
 function onGetLocs() {
-	locService.getLocs().then(locs => {
-		console.log('Locations:', locs)
+	locationService.query.then(locs => {
 		document.querySelector('.locs').innerText = JSON.stringify(locs, null, 2)
 	})
 }
@@ -80,71 +83,61 @@ function onGetLocs() {
 function onGetUserPos() {
 	getPosition()
 		.then(pos => {
-			console.log('User position is:', pos.coords)
 			onPanTo(pos.coords.latitude, pos.coords.longitude)
 		})
-		.catch(err => {
-			console.log('err!!!', err)
-		})
+		.catch(console.log)
+}
+
+function renderWeather(weatherInfo) {
+	const { weather, state, temp, minTemp, maxTemp, windSpeed } = weatherInfo
+	document.querySelector('.weather-main').innerText = weather
+	document.querySelector('.weather-state').innerText = state
+	document.querySelector('.temp').innerText = temp + '°'
+	document.querySelector('.min-temp').innerText = minTemp + '°'
+	document.querySelector('.max-temp').innerText = maxTemp + '°'
+	document.querySelector('.speed').innerText = windSpeed
 }
 
 function onPanTo(lat, lng) {
-	document.querySelector('span.user-pos').innerText = `Latitude: ${lat} - Longitude: ${lng}`
-	mapService.panTo({ lat, lng })
-	getPosition()
-		.then(pos => {
-			console.log('User position is:', pos.coords)
-			document.querySelector('.user-pos').innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
-		})
-		.catch(err => {
-			console.log('err!!!', err)
-		})
+	mapService.panTo(lat, lng)
+	utilService.setQueryParams({ lat: lat })
+	utilService.setQueryParams({ lng: lng })
+	onRenderWeather()
 }
 
-// function onPanTo(pos) {
-//   console.log('Panning the Map')
-//   mapService.panTo(pos)
-// }
-
-//Here we need to make sure the object doesn't start with updated date and only show one date.
-function renderLocs() {
-	locService.query().then(locs => {
-		var strHtml = locs
-			.map(loc => {
-				return `
-          <li>${loc.name}
-          <span>${loc.updatedAt ? `(${loc.updatedAt})` : `(${loc.createdAt})`}</span>
+function renderLocs(locs) {
+	document.querySelector('.loc-container').innerHTML = locs
+		.map(loc => {
+			return `
+          <li>
+					<div> 
+          <span>${loc.name} ${loc.updatedAt ? `(${loc.updatedAt})` : `(${loc.createdAt})`}</span>
           <button class="btn" onclick="onRemoveLoc('${loc.id}')">Delete</button>
           <button class="btn" onclick="onGoToLoc(${loc.lat}, ${loc.lng})">GoTo</button>
-          <button class="btn" onclick="onUpdateLocation('${loc.id}')">Update</button>
-          </li>
+					<button class="btn" onclick="onUpdateLocation('${loc.id}')">Update</button>
+					</div>
+					<p class="user-pos"> Latitude: ${loc.lat.toFixed(5)} - Longitude: ${loc.lng.toFixed(5)} </p>
+					</li>
       `
-			})
-			.join('')
-		var elLocs = document.querySelector('.loc-container')
-		elLocs.innerHTML = strHtml
-	})
+		})
+		.join('')
 }
 
-//need to add a marker here
 function onGoToLoc(lat, lng) {
-	mapService.panTo(lat, lng)
+	onPanTo(lat, lng)
 }
 
 function onRemoveLoc(locId) {
-	locService.remove(locId).then(() => {
-		renderLocs()
-	})
+	locationService.remove(locId).then(onRenderLocs).catch(console.error)
 }
 
-//Don't know what to update yet, so this is just a text for now
 function onUpdateLocation(locId) {
 	const newName = prompt('Enter new name')
 	if (!newName) return
-	locService.get(locId).then(location => {
+	locationService.get(locId).then(location => {
 		location.name = newName
 		location.updatedAt = new Date().toLocaleDateString()
-		locService
+		locationService
 			.save(location)
 			.then(() => {
 				renderLocs()
@@ -153,6 +146,12 @@ function onUpdateLocation(locId) {
 	})
 }
 
-//eden: add marker 3,8
-//raina: 5,6
-//whoever 9
+function showLoader() {
+	//document.querySelector('.spinner').classList.remove('hide')
+	//document.querySelector('.locations').classList.add('hide')
+}
+
+function hideLoader() {
+	//document.querySelector('.spinner').classList.add('hide')
+	//document.querySelector('.locations').classList.remove('hide')
+}
